@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: myproject
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+
+  discovery-service:
+    image: discovery-service:latest
+    build: ./discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-net
+
+  auth-server:
+    image: auth-server:latest
+    build:
+      context: ./auth-server
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - discovery-service
+    networks:
+      - microservices-net
+
+  email-service:
+    image: email-service:latest
+    build:
+      context: ./email-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+      - discovery-service
+    networks:
+      - microservices-net
+
+  gateway-service:
+    image: gateway-service:latest
+    build: ./gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-service
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
