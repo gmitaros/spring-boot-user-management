@@ -25,17 +25,17 @@ public class AuthServerConfig {
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF protection for stateless APIs
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/public/**",
-                                "/v2/api-docs",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-ui.html",
+                                "/auth/public/**",
+                                "/auth/v2/api-docs",
+                                "/auth/v3/api-docs",
+                                "/auth/v3/api-docs/**",
+                                "/auth/swagger-resources",
+                                "/auth/swagger-resources/**",
+                                "/auth/configuration/ui",
+                                "/auth/configuration/security",
+                                "/auth/swagger-ui/**",
+                                "/auth/webjars/**",
+                                "/auth/swagger-ui.html",
                                 "/auth/register",
                                 "/auth/login")
                         .permitAll()

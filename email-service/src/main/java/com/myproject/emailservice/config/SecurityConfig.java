@@ -27,17 +27,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF protection for stateless APIs
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/public/**",
-                                "/v2/api-docs",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-ui.html")
+                                "/emails/public/**",
+                                "/emails/v2/api-docs",
+                                "/emails/v3/api-docs",
+                                "/emails/v3/api-docs/**",
+                                "/emails/swagger-resources",
+                                "/emails/swagger-resources/**",
+                                "/emails/configuration/ui",
+                                "/emails/configuration/security",
+                                "/emails/swagger-ui/**",
+                                "/emails/webjars/**",
+                                "/emails/swagger-ui.html")
                         .permitAll()
                         .requestMatchers("/emails/**").hasRole("USER")
                         .anyRequest().authenticated()

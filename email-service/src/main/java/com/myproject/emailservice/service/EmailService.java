@@ -41,7 +41,7 @@ public class EmailService {
         String template;
         switch (emailDto.getEmailTemplate()) {
             case ACTIVATE_ACCOUNT:
-                template = buildConfirmEmailTemplate(emailDto.getRecipientEmail(), "confirmationUrl");
+                template = buildConfirmEmailTemplate(emailDto.getRecipientEmail());
                 break;
             default:
                 throw new IllegalArgumentException("Invalid email template");
@@ -77,21 +77,18 @@ public class EmailService {
     }
 
     /**
-     * Build the email template for confirming the email address
+     * Build the email template for the welcome email
      *
-     * @param username        the username of the recipient
-     * @param confirmationUrl the confirmation URL
+     * @param username the username of the recipient
      * @return the email template
      */
-    private String buildConfirmEmailTemplate(String username, String confirmationUrl) {
+    private String buildConfirmEmailTemplate(String username) {
         return String.format(
                 "<html><body>" +
                         "<p>Hello %s,</p>" +
-                        "<p>Thank you for registering on My Project. Please click on the following link to confirm your email address:</p>" +
-                        "<a href=\"%s\">Confirm Email</a>" +
-                        "<p>If the button doesn't work click here: %s</p>" +
+                        "<p>Thank you for registering on My Project." +
                         "</body></html>",
-                username, confirmationUrl, confirmationUrl
+                username
         );
     }
 
