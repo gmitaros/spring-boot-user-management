@@ -19,6 +19,7 @@ CREATE TABLE users
     password           VARCHAR(255)        NOT NULL,
     account_locked     BOOLEAN             NOT NULL,
     enabled            BOOLEAN             NOT NULL,
+    deleted            BOOLEAN             NOT NULL DEFAULT FALSE,
     created_date       TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date TIMESTAMP           NULL     DEFAULT CURRENT_TIMESTAMP
 );

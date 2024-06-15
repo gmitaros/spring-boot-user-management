@@ -56,6 +56,9 @@ public class User {
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
     @ManyToMany(fetch = EAGER)
     private List<Role> roles;
 

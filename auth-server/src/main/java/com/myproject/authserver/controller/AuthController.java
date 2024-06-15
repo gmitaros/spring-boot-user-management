@@ -3,8 +3,11 @@ package com.myproject.authserver.controller;
 import com.myproject.authenticationcore.config.TokenGenerator;
 import com.myproject.authserver.dto.LoginRequest;
 import com.myproject.authserver.dto.RegistrationRequest;
-import com.myproject.authserver.model.User;
+import com.myproject.authserver.dto.UserDto;
 import com.myproject.authserver.service.UserService;
+import com.myproject.authserver.utils.DtoMapperUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +20,19 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication")
 public class AuthController {
 
     private final UserService userService;
     private final TokenGenerator tokenGenerator;
 
+    @Operation(summary = "Register a new user", description = "Register a new user with the provided registration details")
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(userService.register(registrationRequest));
+    public ResponseEntity<UserDto> register(@RequestBody RegistrationRequest registrationRequest) {
+        return ResponseEntity.ok(DtoMapperUtil.toUserDto(userService.register(registrationRequest)));
     }
 
+    @Operation(summary = "User login", description = "Authenticate a user with the provided login credentials")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws IOException {
         var authentication = userService.login(loginRequest);
