@@ -12,5 +12,6 @@ public class UserDto {
     private String email;
     private boolean accountLocked;
     private boolean enabled;
+    private boolean deleted;
     private List<String> roles;
 }

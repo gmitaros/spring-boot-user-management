@@ -1,0 +1,10 @@
+.myproject-nav {
+    justify-content: flex-end;
+    width: 100%;
+    margin-right: 15px; /* Adjust this value to increase or decrease the space */
+
+}
+
+.myproject-nav .nav-item {
+    margin-right: 15px; /* Adjust this value to increase or decrease the space */
+}

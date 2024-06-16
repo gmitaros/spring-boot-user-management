@@ -2,6 +2,7 @@ package com.myproject.authserver.service;
 
 
 import com.myproject.authenticationcore.config.TokenGenerator;
+import com.myproject.authenticationcore.model.AuthenticatedUser;
 import com.myproject.authenticationcore.model.Token;
 import com.myproject.authserver.dto.EmailDto;
 import com.myproject.authserver.dto.LoginRequest;
@@ -42,7 +43,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.myproject.authserver.dto.enums.BusinessErrorCodes.USER_EXISTS;
 
@@ -63,6 +63,11 @@ public class UserService {
     private final WebClient webClient;
     private final TokenGenerator tokenGenerator;
 
+
+    public User getUserInfo(Authentication connectedUser) {
+        AuthenticatedUser user = ((AuthenticatedUser) connectedUser.getPrincipal());
+        return userRepository.findById(user.getId()).get();
+    }
 
     /**
      * Registers a new user
@@ -196,6 +201,12 @@ public class UserService {
     public User updateUser(Long id, UserUpdateDto userDetails) {
         final User user = getUserById(id);
         BeanUtils.copyProperties(userDetails, user);
+        // Fetch roles from the database and set them to the user
+        List<Role> roles = roleRepository.findAllByNameIn(userDetails.getRoles());
+        if (roles.size() != userDetails.getRoles().size()) {
+            throw new IllegalArgumentException("Some roles were not found");
+        }
+        user.setRoles(roles);
         logger.info("Updated user with ID: {}", id);
         return userRepository.save(user);
     }
