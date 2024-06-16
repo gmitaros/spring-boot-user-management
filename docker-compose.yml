@@ -45,6 +45,7 @@ services:
     depends_on:
       - postgres
       - discovery-service
+      - auth-server
     networks:
       - microservices-net
 
@@ -59,6 +60,12 @@ services:
       - discovery-service
     networks:
       - microservices-net
+  react-app:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - auth-server
 
 networks:
   microservices-net:
