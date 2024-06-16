@@ -3,9 +3,9 @@ import Header from "./Header/Header";
 import {useEffect, useState} from "react";
 import api from "../api/Api";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import ActivateAccount from "./AccountActivation/AccountActivation";
 import UserList from "./UsersList/UserList";
-import Welcome from "./Welcome";
+import Welcome from "./WelcomePage/Welcome";
+import UserDetailPage from "./UserDetails/UserDetailPage";
 
 function App() {
     const [token, setToken] = useState(null);
@@ -65,11 +65,12 @@ function App() {
                             <Route
                                 exact
                                 path="/"
-                               // element={<UserList user={user}/>}
-                                element={user ? <UserList user={user} /> : <Welcome />}
-
+                                element={user ? <UserList user={user}/> : <Welcome/>}
                             />
-                            <Route path="/activate-account" element={<ActivateAccount/>}/>
+                            <Route
+                                path="/user/:userId/profile"
+                                element={<UserDetailPage user={user} />}
+                            />
                         </Routes>
                     </>
                 )}
