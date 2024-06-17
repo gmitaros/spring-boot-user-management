@@ -1,48 +1,31 @@
 #!/bin/bash
 
-# Define the list of directories
-directories=("authentication-core" "auth-server" "discovery-service" "email-service" "frontend" "gateway-service")
+# Run Maven clean install
+echo "Running 'mvn clean install'"
+mvn clean install
+mavenResult=$?
 
-# Function to log messages
-log_message() {
-    local message="$1"
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message"
-}
+# Check if Maven build was successful
+if [ $mavenResult -eq 0 ]; then
+    echo "Maven build successful"
 
-# Loop through each directory and run 'mvn clean package'
-for dir in "${directories[@]}"; do
-    log_message "Entering directory: $dir"
-    cd "$dir" || { log_message "Failed to enter directory: $dir"; exit 1; }
+    # Assuming Docker Compose file is in the current directory
+    echo "Running 'docker-compose build'"
+    docker-compose build
+    dockerBuildResult=$?
 
-    log_message "Running 'mvn clean package' in $dir"
-    mvn clean package
-    if [[ $? -eq 0 ]]; then
-        log_message "'mvn clean package' completed successfully in $dir"
+    # Check if Docker Compose build was successful
+    if [ $dockerBuildResult -eq 0 ]; then
+        echo "Docker Compose build successful"
+
+        # Run Docker Compose up
+        echo "Running 'docker-compose up'"
+        docker-compose up
     else
-        log_message "'mvn clean package' failed in $dir"
-        exit 1
+        echo "Docker Compose build failed with exit code $dockerBuildResult"
+        exit $dockerBuildResult
     fi
-
-    log_message "Returning to parent directory"
-    cd ..
-done
-
-# Run 'docker-compose build'
-log_message "Running 'docker-compose build'"
-docker-compose build
-if [[ $? -eq 0 ]]; then
-    log_message "'docker-compose build' completed successfully"
 else
-    log_message "'docker-compose build' failed"
-    exit 1
-fi
-
-# Run 'docker-compose up'
-log_message "Running 'docker-compose up'"
-docker-compose up
-if [[ $? -eq 0 ]]; then
-    log_message "'docker-compose up' completed successfully"
-else
-    log_message "'docker-compose up' failed"
-    exit 1
+    echo "Maven build failed with exit code $mavenResult"
+    exit $mavenResult
 fi

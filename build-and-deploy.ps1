@@ -1,51 +1,27 @@
-# Define the list of directories
-$directories = @("authentication-core", "auth-server", "discovery-service", "email-service", "frontend", "gateway-service")
+# Run Maven clean install
+Write-Host "Running 'mvn clean install'"
+$mavenResult = Start-Process -FilePath "mvn" -ArgumentList "clean install" -NoNewWindow -Wait -PassThru
 
-# Function to log messages
-function Log-Message {
-    param (
-        [string]$message
-    )
-    Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') - $message"
-}
+# Check if Maven build was successful
+if ($mavenResult.ExitCode -eq 0) {
+    Write-Host "Maven build successful"
 
-# Loop through each directory and run 'mvn clean package'
-foreach ($dir in $directories) {
-    Log-Message "Entering directory: $dir"
-    Set-Location $dir
+    # Run Docker Compose build
+    Write-Host "Running 'docker-compose build'"
+    $dockerBuildResult = Start-Process -FilePath "docker-compose" -ArgumentList "build" -NoNewWindow -Wait -PassThru
 
-    Log-Message "Running 'mvn clean package' in $dir"
-    mvn clean package
+    # Check if Docker Compose build was successful
+    if ($dockerBuildResult.ExitCode -eq 0) {
+        Write-Host "Docker Compose build successful"
 
-    if ($LASTEXITCODE -eq 0) {
-        Log-Message "'mvn clean package' completed successfully in $dir"
+        # Run Docker Compose up
+        Write-Host "Running 'docker-compose up'"
+        Start-Process -FilePath "docker-compose" -ArgumentList "up" -NoNewWindow -Wait
     } else {
-        Log-Message "'mvn clean package' failed in $dir"
-        Exit 1
+        Write-Host "Docker Compose build failed with exit code $($dockerBuildResult.ExitCode)"
+        Exit $dockerBuildResult.ExitCode
     }
-
-    Log-Message "Returning to parent directory"
-    Set-Location ..
-}
-
-# Run 'docker-compose build'
-Log-Message "Running 'docker-compose build'"
-docker-compose build
-
-if ($LASTEXITCODE -eq 0) {
-    Log-Message "'docker-compose build' completed successfully"
 } else {
-    Log-Message "'docker-compose build' failed"
-    Exit 1
-}
-
-# Run 'docker-compose up'
-Log-Message "Running 'docker-compose up'"
-docker-compose up
-
-if ($LASTEXITCODE -eq 0) {
-    Log-Message "'docker-compose up' completed successfully"
-} else {
-    Log-Message "'docker-compose up' failed"
-    Exit 1
+    Write-Host "Maven build failed with exit code $($mavenResult.ExitCode)"
+    Exit $mavenResult.ExitCode
 }
