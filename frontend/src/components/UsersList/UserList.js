@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Button, Form, Pagination, Table } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Alert, Button, Form, Pagination, Table} from 'react-bootstrap';
 import api from "../../api/Api";
 import EditUserModal from '../Modals/EditUserModal/EditUserModal';
 import EmailsModal from '../Modals/EmailsModal/EmailsModal';
+import { useNavigate  } from 'react-router-dom';
 
-const UserList = ({ user }) => {
+const UserList = ({user}) => {
     const [users, setUsers] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -23,9 +24,13 @@ const UserList = ({ user }) => {
         enabled: false,
         roles: []
     });
+    const navigate = useNavigate();
+    const isAdmin = user.roles.includes('ROLE_ADMIN');
 
     useEffect(() => {
-        fetchUsers();
+        if (isAdmin) {
+            fetchUsers();
+        }
     }, [page, showActiveUsers, user]);
 
     const fetchUsers = async () => {
@@ -49,10 +54,10 @@ const UserList = ({ user }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            setAlert({ type: 'success', message: 'User deleted successfully' });
+            setAlert({type: 'success', message: 'User deleted successfully'});
             await fetchUsers();
         } catch (error) {
-            setAlert({ type: 'danger', message: 'Error deleting user' });
+            setAlert({type: 'danger', message: 'Error deleting user'});
             console.error('Error deleting user:', error);
         }
     };
@@ -65,16 +70,16 @@ const UserList = ({ user }) => {
 
     const handleDeleteMultiple = async () => {
         try {
-            await api.delete(`/auth/users`, { data: selectedUsers }, {
+            await api.delete(`/auth/users`, {data: selectedUsers}, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            setAlert({ type: 'success', message: 'Users deleted successfully' });
+            setAlert({type: 'success', message: 'Users deleted successfully'});
             setSelectedUsers([]);
             await fetchUsers();
         } catch (error) {
-            setAlert({ type: 'danger', message: 'Error deleting users' });
+            setAlert({type: 'danger', message: 'Error deleting users'});
             console.error('Error deleting users:', error);
         }
     };
@@ -107,8 +112,18 @@ const UserList = ({ user }) => {
         setShowEmailsModal(true);
     };
 
-    const isAdmin = user.roles.includes('ROLE_ADMIN');
+    const handleViewProfile = () => {
+        navigate(`/user/${user.id}/profile`);
+    };
 
+    if (!isAdmin) {
+        return (
+            <div className="container mx-auto my-4">
+                <Alert variant="danger">You do not have access to this page because you are not an admin.</Alert>
+                <Button variant="primary" onClick={handleViewProfile}>View Your Profile</Button>
+            </div>
+        );
+    }
     return (
         <div className="container mx-auto my-4">
             {alert && <Alert variant={alert.type}>{alert.message}</Alert>}
@@ -158,7 +173,8 @@ const UserList = ({ user }) => {
                             {isAdmin && (
                                 <>
                                     <Button variant="warning" onClick={() => handleEdit(user)}>Edit</Button>{' '}
-                                    <Button variant="danger" onClick={() => handleDelete(user.id)} disabled={user.deleted}>
+                                    <Button variant="danger" onClick={() => handleDelete(user.id)}
+                                            disabled={user.deleted}>
                                         Delete
                                     </Button>{' '}
                                     <Button variant="info" onClick={() => handleShowEmails(user.id)}>

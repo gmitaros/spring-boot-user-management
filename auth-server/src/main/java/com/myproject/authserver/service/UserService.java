@@ -33,10 +33,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -50,7 +50,6 @@ import static com.myproject.authserver.dto.enums.BusinessErrorCodes.USER_EXISTS;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -63,10 +62,10 @@ public class UserService {
     private final WebClient webClient;
     private final TokenGenerator tokenGenerator;
 
-
+    @Transactional(readOnly = true)
     public User getUserInfo(Authentication connectedUser) {
         AuthenticatedUser user = ((AuthenticatedUser) connectedUser.getPrincipal());
-        return userRepository.findById(user.getId()).get();
+        return userRepository.findByEmail(user.getEmail()).get();
     }
 
     /**
@@ -115,7 +114,7 @@ public class UserService {
                     .message("test")
                     .subject("Welcome to My Project").build();
 
-            final Token token = tokenGenerator.createToken(SecurityContextHolder.getContext().getAuthentication());
+            final Token token = tokenGenerator.createAppToken(new AuthenticatedUser(user.getId(), user.getEmail(), user.getPassword(), user.getRoles().stream().map(Role::getName).toList()));
             webClient.post()
                     .uri("/emails/send")
                     .bodyValue(email)
@@ -139,14 +138,6 @@ public class UserService {
                                 }
                             }
                     );
-
-//            emailService.sendEmail(
-//                    user.getEmail(),
-//                    String.format("%s %s", user.getFirstname(), user.getLastname()),
-//                    EmailTemplate.ACTIVATE_ACCOUNT,
-//                    String.format("%s?activation-code=%s", activationUrl, token),
-//                    "Account activation"
-//            );
         }
     }
 
@@ -184,6 +175,7 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<UserDto> getAllUsers(boolean active, Pageable pageable) {
         log.info("Fetching all {} users", active ? "active" : "all");
         Page<User> usersPage;
@@ -198,19 +190,23 @@ public class UserService {
         return new PageImpl<>(userDtoList, pageable, usersPage.getTotalElements());
     }
 
+    @Transactional
     public User updateUser(Long id, UserUpdateDto userDetails) {
         final User user = getUserById(id);
         BeanUtils.copyProperties(userDetails, user);
-        // Fetch roles from the database and set them to the user
-        List<Role> roles = roleRepository.findAllByNameIn(userDetails.getRoles());
-        if (roles.size() != userDetails.getRoles().size()) {
-            throw new IllegalArgumentException("Some roles were not found");
+        if (!CollectionUtils.isEmpty(userDetails.getRoles())) {
+            // Fetch roles from the database and set them to the user
+            List<Role> roles = roleRepository.findAllByNameIn(userDetails.getRoles());
+            if (roles.size() != userDetails.getRoles().size()) {
+                throw new IllegalArgumentException("Some roles were not found");
+            }
+            user.setRoles(roles);
         }
-        user.setRoles(roles);
         logger.info("Updated user with ID: {}", id);
         return userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         final User user = getUserById(id);
         user.setDeleted(true);
@@ -218,6 +214,7 @@ public class UserService {
         logger.info("Soft deleted user with ID: {}", id);
     }
 
+    @Transactional
     public void deleteUsers(List<Long> ids) {
         ids.forEach(this::deleteUser);
         logger.info("Soft deleted users with IDs: {}", ids);

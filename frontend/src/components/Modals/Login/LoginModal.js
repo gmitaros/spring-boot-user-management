@@ -27,7 +27,7 @@ const LoginModal = ({show, handleClose, onLogin}) => {
 
             const {accessToken} = response.data;
             // Fetch user info after successful login
-            const userInfoResponse = await api.get('/auth/users/info', {
+            const userInfoResponse = await api.get('/auth/user/info', {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }

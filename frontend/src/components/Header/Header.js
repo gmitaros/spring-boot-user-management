@@ -23,12 +23,14 @@ const Header = ({onLogin, user}) => {
         navigate(`/user/${userId}/profile`, {state: {fullName}});
     };
 
+
     const handleLogout = () => {
         // Clear token from localStorage
         localStorage.removeItem('token');
         delete api.defaults.headers.common['Authorization'];
         // Reset user state
         onLogin(undefined, undefined);
+        navigate('/');
     };
 
     return (

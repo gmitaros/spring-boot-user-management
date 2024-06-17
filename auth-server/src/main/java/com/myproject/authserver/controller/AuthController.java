@@ -9,6 +9,7 @@ import com.myproject.authserver.utils.DtoMapperUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +30,7 @@ public class AuthController {
     @Operation(summary = "Register a new user", description = "Register a new user with the provided registration details")
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(DtoMapperUtil.toUserDto(userService.register(registrationRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(DtoMapperUtil.toUserDto(userService.register(registrationRequest)));
     }
 
     @Operation(summary = "User login", description = "Authenticate a user with the provided login credentials")

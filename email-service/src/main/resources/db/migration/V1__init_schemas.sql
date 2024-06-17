@@ -5,9 +5,8 @@ CREATE TABLE emails
     subject         VARCHAR(255) NOT NULL,
     message         TEXT         NOT NULL,
     recipient_email VARCHAR(255) NOT NULL,
-    sent_at         TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    status          VARCHAR(50)  NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    sent_at         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status          VARCHAR(50)  NOT NULL
 );
 
 -- Create an index on user_id for faster lookups

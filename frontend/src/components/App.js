@@ -27,7 +27,7 @@ function App() {
     const checkTokenValidity = async (storedToken) => {
         try {
             if (storedToken) {
-                const response = await api.get('/auth/users/info', {
+                const response = await api.get('/auth/user/info', {
                     headers: {
                         'Authorization': `Bearer ${storedToken}`
                     }

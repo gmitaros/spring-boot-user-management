@@ -60,12 +60,16 @@ services:
       - discovery-service
     networks:
       - microservices-net
-  react-app:
-    build: ./frontend
+
+  mailhog:
+    image: mailhog/mailhog
     ports:
-      - "3000:80"
-    depends_on:
-      - auth-server
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MH_STORAGE: "maildir"
+    networks:
+      - microservices-net
 
 networks:
   microservices-net:

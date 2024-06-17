@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -50,10 +49,9 @@ public class TokenGenerator {
         return new NimbusJwtEncoder(jwks);
     }
 
-    private String createAccessToken(Authentication authentication) throws IOException {
-        AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
+    public String createAccessToken(AuthenticatedUser user) throws IOException {
         Instant now = Instant.now();
-        String authorities = authentication.getAuthorities().stream()
+        String authorities = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
@@ -62,6 +60,7 @@ public class TokenGenerator {
                 .expiresAt(now.plus(5, ChronoUnit.MINUTES))
                 .subject(String.valueOf(user.getId()))
                 .claim("roles", authorities)
+                .claim("email", user.getEmail())
                 .build();
 
         return jwtAccessTokenEncoder().encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
@@ -90,7 +89,7 @@ public class TokenGenerator {
             }
             Token tokenDTO = new Token();
             tokenDTO.setUserId(String.valueOf(user.getId()));
-            tokenDTO.setAccessToken(createAccessToken(authentication));
+            tokenDTO.setAccessToken(createAccessToken((AuthenticatedUser) authentication.getPrincipal()));
 
             String refreshToken;
             if (authentication.getCredentials() instanceof Jwt jwt) {
@@ -108,6 +107,17 @@ public class TokenGenerator {
             }
             tokenDTO.setRefreshToken(refreshToken);
 
+            return tokenDTO;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create access token");
+        }
+    }
+
+    public Token createAppToken(AuthenticatedUser user) {
+        try {
+            Token tokenDTO = new Token();
+            tokenDTO.setUserId(String.valueOf(-1));
+            tokenDTO.setAccessToken(createAccessToken(user));
             return tokenDTO;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create access token");

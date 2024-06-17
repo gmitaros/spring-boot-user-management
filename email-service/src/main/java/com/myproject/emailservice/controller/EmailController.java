@@ -1,8 +1,10 @@
 package com.myproject.emailservice.controller;
 
 import com.myproject.emailservice.dto.EmailDto;
+import com.myproject.emailservice.dto.EmailResponseDto;
 import com.myproject.emailservice.model.Email;
 import com.myproject.emailservice.service.EmailService;
+import com.myproject.emailservice.utils.DtoMapperUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +48,11 @@ public class EmailController {
      */
     @Operation(summary = "Get emails by user ID", description = "Retrieve all emails sent to a specific user by user ID")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Email>> getEmailsByUserId(@PathVariable Long userId) {
-        List<Email> emails = emailService.getEmailsByUserId(userId);
+    public ResponseEntity<List<EmailResponseDto>> getEmailsByUserId(@PathVariable Long userId) {
+        List<EmailResponseDto> emails = emailService.getEmailsByUserId(userId)
+                .stream()
+                .map(DtoMapperUtil::toEmailDto)
+                .toList();
         return new ResponseEntity<>(emails, HttpStatus.OK);
     }
 }
