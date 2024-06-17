@@ -107,9 +107,3 @@ If you encounter any issues, make sure:
 - All services are up and running.
 - Ports 1025 and 8025 (for MailHog) are not blocked by your firewall.
 - You have the correct versions of Java, Maven, Docker, and Node.js installed.
-
-For further assistance, please refer to the project's issue tracker on GitHub.
-
----
-
-Feel free to contribute to the project by submitting pull requests or reporting issues. Happy coding!
