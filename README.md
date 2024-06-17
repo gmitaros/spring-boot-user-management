@@ -83,6 +83,7 @@ The project is structured into several microservices, each serving a specific pu
     - **More info**: Click [Frontend README](frontend/README.md) to view more info
 
 # Benefits of the Architectural Design
+![Alt text](screenshots/img.png)
 
 ## 1. **Separation of Concerns**
 - Each microservice is responsible for a specific aspect of the application, leading to a clear separation of concerns. This modular approach makes it easier to understand, develop, and maintain each part of the system.
