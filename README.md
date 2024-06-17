@@ -12,6 +12,12 @@ Make sure you have the following installed on your machine:
 
 ## Getting Started
 
+The fastest way to build and deploy the backend system is by running the [build-and-deploy.ps1](build-and-deploy.ps1) script which is designed for the Powershell windows terminal
+PS: It doesn't build and deploy the frontend client
+```sh
+PS E:\my-projects\spring-boot-user-management> .\build-and-deploy.ps1
+```
+
 ### Step 1: Build the Maven Projects
 
 First, navigate to the root directory of your project and run the following command to clean and build all Maven projects:
