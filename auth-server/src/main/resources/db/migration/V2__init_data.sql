@@ -4,7 +4,7 @@ INSERT INTO roles (name, created_date)
 VALUES ('ROLE_ADMIN', NOW());
 
 INSERT INTO users (first_name, last_name, email, password, account_locked, enabled, created_date)
-VALUES ('Giorgos', 'Mitaros', 'gmitaros@gmail.com', '$2a$10$lG1O3ZA0EYOlpMZpUGCazOKjmjnohf9RGtPlaPgrcIzJnAdlPfPSm',
+VALUES ('Giorgos', 'Mitaros', 'gmitaros@gmail.com', '$2a$10$ZtcJdGNi2EZ3s0PT./mQs.XOnWVdFERtH1yJ12WGp7jj.dlWLInZG',
         FALSE, TRUE, NOW());
 
 INSERT INTO users_roles (roles_id, user_id)

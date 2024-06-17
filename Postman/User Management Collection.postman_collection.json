@@ -1,0 +1,438 @@
+{
+	"info": {
+		"_postman_id": "12c5bea8-e2d9-426e-9eaf-6b566c7b2e16",
+		"name": "User Management Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8140186"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Doe\",\r\n    \"email\": \"mitaros@hotmail.com\",\r\n    \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/auth/register",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body to get the JSON object\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"// Extract the access token from the response\r",
+									"const accessToken = response.accessToken;\r",
+									"\r",
+									"// Set the access token to an environment variable\r",
+									"pm.environment.set(\"token\", accessToken);\r",
+									"\r",
+									"// Optionally, log the token to the console for debugging\r",
+									"console.log(\"Access Token:\", accessToken);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gmitaros@gmail.com\",\r\n    \"password\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/auth/login",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/auth/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"auth",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Emails",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{host}}/emails/user/1",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"emails",
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,el-GR;q=0.8,el;q=0.7"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJteUFwcCIsInN1YiI6IjEiLCJleHAiOjE3MTg2MDQwOTIsImlhdCI6MTcxODYwMzc5MiwiZW1haWwiOiJnbWl0YXJvc0BnbWFpbC5jb20iLCJyb2xlcyI6IlJPTEVfVVNFUiBST0xFX0FETUlOIn0.Yluvd71xsF7GxjjSiGrBdw4SDtkmI7NULzNGG8JdATlvHI9x4q03w-0JNb7Y6K1ZE5LDxksonF3tlD2kxj-k4ZvpNG9_mAN4BLVPa8pc6Oe5p39U_LPbRKBSQxSIERH6mnoYyedy25CO7rTSUJaGCa0YdP1NZDYL2x2HN31lNSYnpyU1BNt1q2JFo-vWqC1qpALmJZWRozv-au79VedRKzbbBpi2QHqqnBgjoL6F8nsU-hHQv-uL46lMXErlUemZGv5ZMeUrhNGwG95rdlnPZ_UhNnyfMITVqnlWlHNw6A3x8-dhKHeWTOcowS9-vEUl20i6hAqpHQ6Z3y6aAiS53A"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "DNT",
+						"value": "1"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:3000"
+					},
+					{
+						"key": "Referer",
+						"value": "http://localhost:3000/"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-site"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 4,\r\n    \"firstname\": \"John1\",\r\n    \"lastname\": \"Doe2\",\r\n    \"email\": \"mitaros@hotmail.com\",\r\n    \"accountLocked\": false,\r\n    \"enabled\": true,\r\n    \"roles\": [\r\n        \"ROLE_USER\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}/auth/users/4",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"users",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,el-GR;q=0.8,el;q=0.7"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJteUFwcCIsInN1YiI6IjEiLCJleHAiOjE3MTg2MDQwOTIsImlhdCI6MTcxODYwMzc5MiwiZW1haWwiOiJnbWl0YXJvc0BnbWFpbC5jb20iLCJyb2xlcyI6IlJPTEVfVVNFUiBST0xFX0FETUlOIn0.Yluvd71xsF7GxjjSiGrBdw4SDtkmI7NULzNGG8JdATlvHI9x4q03w-0JNb7Y6K1ZE5LDxksonF3tlD2kxj-k4ZvpNG9_mAN4BLVPa8pc6Oe5p39U_LPbRKBSQxSIERH6mnoYyedy25CO7rTSUJaGCa0YdP1NZDYL2x2HN31lNSYnpyU1BNt1q2JFo-vWqC1qpALmJZWRozv-au79VedRKzbbBpi2QHqqnBgjoL6F8nsU-hHQv-uL46lMXErlUemZGv5ZMeUrhNGwG95rdlnPZ_UhNnyfMITVqnlWlHNw6A3x8-dhKHeWTOcowS9-vEUl20i6hAqpHQ6Z3y6aAiS53A"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "DNT",
+						"value": "1"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:3000"
+					},
+					{
+						"key": "Referer",
+						"value": "http://localhost:3000/"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-site"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					}
+				],
+				"url": {
+					"raw": "http://{{host}}/auth/users/4",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"users",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Multiple users",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,el-GR;q=0.8,el;q=0.7"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJteUFwcCIsInN1YiI6IjEiLCJleHAiOjE3MTg2MDQwOTIsImlhdCI6MTcxODYwMzc5MiwiZW1haWwiOiJnbWl0YXJvc0BnbWFpbC5jb20iLCJyb2xlcyI6IlJPTEVfVVNFUiBST0xFX0FETUlOIn0.Yluvd71xsF7GxjjSiGrBdw4SDtkmI7NULzNGG8JdATlvHI9x4q03w-0JNb7Y6K1ZE5LDxksonF3tlD2kxj-k4ZvpNG9_mAN4BLVPa8pc6Oe5p39U_LPbRKBSQxSIERH6mnoYyedy25CO7rTSUJaGCa0YdP1NZDYL2x2HN31lNSYnpyU1BNt1q2JFo-vWqC1qpALmJZWRozv-au79VedRKzbbBpi2QHqqnBgjoL6F8nsU-hHQv-uL46lMXErlUemZGv5ZMeUrhNGwG95rdlnPZ_UhNnyfMITVqnlWlHNw6A3x8-dhKHeWTOcowS9-vEUl20i6hAqpHQ6Z3y6aAiS53A"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "DNT",
+						"value": "1"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:3000"
+					},
+					{
+						"key": "Referer",
+						"value": "http://localhost:3000/"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-site"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[1,2]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}/auth/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
