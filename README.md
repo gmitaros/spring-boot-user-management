@@ -80,7 +80,7 @@ The project is structured into several microservices, each serving a specific pu
 - **frontend**:
     - **Purpose**: This is the client-facing part of the application.
     - **Functionalities**: It is a web application built with  React that interacts with the backend services via APIs. It provides a user interface for users to interact with the application.
-
+    - **More info**: Click [Frontend README](frontend/README.md) to view more info
 
 
 ## Additional Information
